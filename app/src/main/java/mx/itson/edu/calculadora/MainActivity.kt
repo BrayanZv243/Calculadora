@@ -2,8 +2,8 @@ package mx.itson.edu.calculadora
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView;
-import android.widget.Button;
+import android.widget.TextView
+import android.widget.Button
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,6 +15,8 @@ class MainActivity : AppCompatActivity() {
 
     var isUsingSymbol: Boolean = false
     var symbolPressed: String = ""
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,135 +45,26 @@ class MainActivity : AppCompatActivity() {
         val txtOperacion: TextView = findViewById(R.id.textViewSecundario)
         val txtPrincipal: TextView = findViewById(R.id.textViewPrincipal)
 
-
-        btnCero.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnCero.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnCero.text.toString())
-                txtPrincipal.text = segundoValor
-            }
-
-        }
-
-        btnUno.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnUno.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnUno.text.toString())
-                txtPrincipal.text = segundoValor
-            }
-        }
-
-        btnDos.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnDos.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnDos.text.toString())
-                txtPrincipal.text = segundoValor
-            }
-        }
-
-        btnTres.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnTres.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnTres.text.toString())
-                txtPrincipal.text = segundoValor
-            }
-        }
-
-        btnCuatro.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnCuatro.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnCuatro.text.toString())
-                txtPrincipal.text = segundoValor
-            }
-        }
-
-        btnCinco.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnCinco.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnCinco.text.toString())
-                txtPrincipal.text = segundoValor
-            }
-        }
-
-        btnSeis.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnSeis.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnSeis.text.toString())
-                txtPrincipal.text = segundoValor
-            }
-        }
-
-        btnSiete.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnSiete.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnSiete.text.toString())
-                txtPrincipal.text = segundoValor
-            }
-        }
-
-        btnOcho.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnOcho.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnOcho.text.toString())
-                txtPrincipal.text = segundoValor
-            }
-        }
-
-        btnNueve.setOnClickListener{
-            if(!isUsingSymbol){
-                primerValor = concatenateString(primerValor,btnNueve.text.toString())
-                txtPrincipal.text = primerValor
-            }else {
-                segundoValor = concatenateString(segundoValor,btnNueve.text.toString())
-                txtPrincipal.text = segundoValor
-            }
+        val buttons = arrayOf(btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve)
+        for (button in buttons) {
+            button.setOnClickListener { asingValues(button) }
         }
 
         btnMas.setOnClickListener{
-            txtOperacion.text = primerValor + " + "
-            txtPrincipal.text = segundoValor
-            isUsingSymbol = true
-            symbolPressed = "+"
+            setOperator("+")
 
         }
 
         btnMenos.setOnClickListener{
-            txtOperacion.text = primerValor + " - "
-            txtPrincipal.text = segundoValor
-            isUsingSymbol = true
-            symbolPressed = "-"
+            setOperator("-")
         }
 
         btnPor.setOnClickListener{
-            txtOperacion.text = primerValor + " * "
-            txtPrincipal.text = segundoValor
-            isUsingSymbol = true
-            symbolPressed = "*"
+            setOperator("*")
         }
 
         btnDiv.setOnClickListener{
-            txtOperacion.text = primerValor + " / "
-            txtPrincipal.text = segundoValor
-            isUsingSymbol = true
-            symbolPressed = "/"
+            setOperator("/")
         }
 
         btnBorrar.setOnClickListener{
@@ -181,30 +74,58 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnResultado.setOnClickListener{
-            primerValorInt = primerValor.toInt()
-            segundoValorInt = segundoValor.toInt()
+            var result = 0
+            var success = true
+            try {
+                primerValorInt = primerValor.toInt()
+                segundoValorInt = segundoValor.toInt()
 
-            val result = when(symbolPressed){
-                "+" -> primerValorInt + segundoValorInt
-                "-" -> primerValorInt - segundoValorInt
-                "*" -> primerValorInt * segundoValorInt
-                "/" -> primerValorInt / segundoValorInt
-                else -> txtPrincipal.text = "Seleccione numeros"
+                result = when(symbolPressed){
+                    "+" -> primerValorInt + segundoValorInt
+                    "-" -> primerValorInt - segundoValorInt
+                    "*" -> primerValorInt * segundoValorInt
+                    "/" -> primerValorInt / segundoValorInt
+                    else -> 0
+                }
+            }catch(e: Exception){
+                txtPrincipal.text = ""
+                txtOperacion.text = ""
+                resetAll()
+                success = false
             }
-            txtOperacion.text = primerValor +" "+ symbolPressed +" "+ segundoValor
-            txtPrincipal.text = result.toString()
-            resetAll()
+            if(success){
+                txtOperacion.text = primerValor +" "+ symbolPressed +" "+ segundoValor
+                txtPrincipal.text = result.toString()
+                resetAll()
+            }
+
         }
 
     }
-
-    fun resetAll(){
+    private fun setOperator(symbol: String) {
+        val txtPrincipal: TextView = findViewById(R.id.textViewPrincipal)
+        val txtOperacion: TextView = findViewById(R.id.textViewSecundario)
+        txtOperacion.text = primerValor + " " + symbol + " "
+        txtPrincipal.text = segundoValor
+        isUsingSymbol = true
+        symbolPressed = symbol
+    }
+    private fun asingValues(btn: Button){
+        val txtPrincipal: TextView = findViewById(R.id.textViewPrincipal)
+        if(!isUsingSymbol){
+            primerValor = concatenateString(primerValor,btn.text.toString())
+            txtPrincipal.text = primerValor
+        }else {
+            segundoValor = concatenateString(segundoValor,btn.text.toString())
+            txtPrincipal.text = segundoValor
+        }
+    }
+    private fun resetAll(){
         isUsingSymbol = false
         primerValor = ""
         segundoValor = ""
     }
-
-    fun concatenateString(currentlyString: String, newString: String): String {
+    private fun concatenateString(currentlyString: String, newString: String): String {
         return currentlyString + newString
     }
 }
