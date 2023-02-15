@@ -1,133 +1,94 @@
 package mx.itson.edu.calculadora
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
-    var primerValor: String = ""
-    var segundoValor: String = ""
+    private var operacion: Int = 0
+    private var numero: Double = 0.0
 
-    var primerValorInt: Int = 0
-    var segundoValorInt: Int = 0
-
-    var isUsingSymbol: Boolean = false
-    var symbolPressed: String = ""
-
-
+    private lateinit var tvResultado: TextView
+    private lateinit var tvOperacion: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Obtenemos todos los botones para poder darles funcionalidad
-        val btnCero: Button = findViewById(R.id.btn0)
-        val btnUno: Button = findViewById(R.id.btn1)
-        val btnDos: Button = findViewById(R.id.btn2)
-        val btnTres: Button = findViewById(R.id.btn3)
-        val btnCuatro: Button = findViewById(R.id.btn4)
-        val btnCinco: Button = findViewById(R.id.btn5)
-        val btnSeis: Button = findViewById(R.id.btn6)
-        val btnSiete: Button = findViewById(R.id.btn7)
-        var btnOcho:  Button = findViewById(R.id.btn8)
-        val btnNueve: Button = findViewById(R.id.btn9)
+        tvOperacion = findViewById(R.id.textViewSecundario)
+        tvResultado = findViewById(R.id.textViewPrincipal)
 
-        val btnMas: Button = findViewById(R.id.btnMas)
-        val btnMenos: Button = findViewById(R.id.btnResta)
-        val btnPor: Button = findViewById(R.id.btnMult)
-        val btnDiv: Button = findViewById(R.id.btnDiv)
+        val btnDel: Button = findViewById(R.id.btnBorrar)
+        val btnIgual: Button = findViewById(R.id.btnResult)
 
-        val btnBorrar: Button = findViewById(R.id.btnBorrar)
-        val btnResultado: Button = findViewById(R.id.btnResult)
-
-        val txtOperacion: TextView = findViewById(R.id.textViewSecundario)
-        val txtPrincipal: TextView = findViewById(R.id.textViewPrincipal)
-
-        val buttons = arrayOf(btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve)
-        for (button in buttons) {
-            button.setOnClickListener { asingValues(button) }
-        }
-
-        btnMas.setOnClickListener{
-            setOperator("+")
-
-        }
-
-        btnMenos.setOnClickListener{
-            setOperator("-")
-        }
-
-        btnPor.setOnClickListener{
-            setOperator("*")
-        }
-
-        btnDiv.setOnClickListener{
-            setOperator("/")
-        }
-
-        btnBorrar.setOnClickListener{
-            resetAll()
-            txtOperacion.text = ""
-            txtPrincipal.text = ""
-        }
-
-        btnResultado.setOnClickListener{
-            var result = 0
-            var success = true
+        btnIgual.setOnClickListener {
             try {
-                primerValorInt = primerValor.toInt()
-                segundoValorInt = segundoValor.toInt()
-
-                result = when(symbolPressed){
-                    "+" -> primerValorInt + segundoValorInt
-                    "-" -> primerValorInt - segundoValorInt
-                    "*" -> primerValorInt * segundoValorInt
-                    "/" -> primerValorInt / segundoValorInt
-                    else -> 0
+                val numero2: Double = tvResultado.text.toString().toDouble()
+                val resp: Any = when (operacion) {
+                    1 -> numero + numero2
+                    2 -> numero - numero2
+                    3 -> numero * numero2
+                    4 -> if (numero2 == 0.0) "División por cero inválida" else numero / numero2
+                    else -> ""
                 }
-            }catch(e: Exception){
-                txtPrincipal.text = ""
-                txtOperacion.text = ""
-                resetAll()
-                success = false
-            }
-            if(success){
-                txtOperacion.text = primerValor +" "+ symbolPressed +" "+ segundoValor
-                txtPrincipal.text = result.toString()
+
+                tvResultado.text = resp.toString()
+                tvOperacion.text = ""
+            } catch (e: Exception) {
+                Toast.makeText(applicationContext, "Seleccione una operación", Toast.LENGTH_SHORT).show()
                 resetAll()
             }
 
         }
-
-    }
-    private fun setOperator(symbol: String) {
-        val txtPrincipal: TextView = findViewById(R.id.textViewPrincipal)
-        val txtOperacion: TextView = findViewById(R.id.textViewSecundario)
-        txtOperacion.text = primerValor + " " + symbol + " "
-        txtPrincipal.text = segundoValor
-        isUsingSymbol = true
-        symbolPressed = symbol
-    }
-    private fun asingValues(btn: Button){
-        val txtPrincipal: TextView = findViewById(R.id.textViewPrincipal)
-        if(!isUsingSymbol){
-            primerValor = concatenateString(primerValor,btn.text.toString())
-            txtPrincipal.text = primerValor
-        }else {
-            segundoValor = concatenateString(segundoValor,btn.text.toString())
-            txtPrincipal.text = segundoValor
+        btnDel.setOnClickListener {
+            resetAll()
         }
     }
-    private fun resetAll(){
-        isUsingSymbol = false
-        primerValor = ""
-        segundoValor = ""
+
+    private fun resetAll() {
+        tvOperacion.text = ""
+        tvResultado.text = ""
+        numero = 0.0
+        operacion = 0
     }
-    private fun concatenateString(currentlyString: String, newString: String): String {
-        return currentlyString + newString
+
+    fun toque(view: View) {
+        val tvResultado: TextView = findViewById(R.id.textViewPrincipal)
+        val num2: String = tvResultado.text.toString()
+
+        tvResultado.text = num2 + (view as Button).text
+    }
+
+    fun operacion(view: View) {
+        try {
+            numero = tvResultado.text.toString().toDouble()
+            val num2Text: String = tvResultado.text.toString()
+            tvResultado.text = ""
+            when (view.id) {
+                R.id.btnMas -> {
+                    tvOperacion.text = "$num2Text+"
+                    operacion = 1
+                }
+                R.id.btnResta -> {
+                    tvOperacion.text = "$num2Text-"
+                    operacion = 2
+                }
+                R.id.btnMult -> {
+                    tvOperacion.text = "$num2Text*"
+                    operacion = 3
+                }
+                R.id.btnDiv -> {
+                    tvOperacion.text = "$num2Text/"
+                    operacion = 4
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(applicationContext, "Seleccione una operación", Toast.LENGTH_SHORT).show()
+            resetAll()
+        }
     }
 }
-
-
